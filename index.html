@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICSnet - IT Solutions</title>
+    <style>
+        :root {
+            --color-blue-dark: #00003A;
+            --color-white-cyan: #F6FFFF;
+            --color-blue-primary: #018DD6;
+            --color-mint: #6BFFCE;
+            --color-teal: #3ACCAE;
+            --color-blue-royal: #2556EA;
+            --color-cyan-light: #83E1EB;
+            --color-blue-light: #70A4EA;
+            --color-magenta: #E20074;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+
+        body {
+            background-color: var(--color-blue-dark);
+            color: var(--color-white-cyan);
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-shape { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; }
+        .shape-1 { width: 400px; height: 400px; background: var(--color-teal); top: -100px; left: -100px; opacity: 0.6; }
+        .shape-2 { width: 500px; height: 500px; background: var(--color-blue-royal); bottom: -150px; right: -100px; opacity: 0.5; }
+
+        .app-container { display: flex; width: 100%; min-height: 100vh; z-index: 1; }
+
+        .glass-panel {
+            background: rgba(246, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .sidebar {
+            width: 300px;
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(246, 255, 255, 0.1);
+            overflow-y: auto;
+        }
+
+        .logo-frame {
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            padding: 10px;
+            background: #ffffff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .logo-frame img { max-width: 100%; height: auto; display: block; }
+
+        .language-selector-top { margin-bottom: 25px; width: 100%; }
+
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-cyan-light);
+            font-size: 13px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(107, 255, 206, 0.15);
+            color: var(--color-mint);
+            font-weight: bold;
+        }
+
+        .partners-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(246, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .partner-link { text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s; }
+        .partner-link img { max-width: 140px; height: auto; background: white; padding: 8px; border-radius: 8px; }
+        .partner-text { color: var(--color-cyan-light); font-size: 11px; text-align: center; text-decoration: underline; }
+
+        .lang-toggle-btn {
+            background: rgba(107, 255, 206, 0.1);
+            border: 1px solid rgba(107, 255, 206, 0.4);
+            color: var(--color-mint);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .main-content { flex: 1; padding: 60px; display: flex; flex-direction: column; overflow-y: auto; }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        h2 { color: var(--color-blue-primary); font-size: 28px; margin-bottom: 20px; text-transform: uppercase; border-left: 4px solid var(--color-mint); padding-left: 15px; }
+        h3 { color: var(--color-blue-light); margin: 25px 0 15px 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .glass-card { background: rgba(246, 255, 255, 0.03); border: 1px solid rgba(246, 255, 255, 0.1); padding: 30px; border-radius: 15px; margin-bottom: 30px; }
+
+        .project-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 10px;
+            transition: 0.3s;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .hero-banner {
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(1, 141, 214, 0.1), rgba(107, 255, 206, 0.05));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .hero-banner h1 {
+            font-size: 42px;
+            color: var(--color-white-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .home-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(246, 255, 255, 0.08);
+            border-color: var(--color-mint);
+        }
+
+        .icon-box {
+            font-size: 40px;
+            color: var(--color-mint);
+            margin-bottom: 20px;
+        }
+
+        .more-card { border: 1px solid var(--color-mint); cursor: pointer; transition: 0.3s; text-align: center; padding: 20px;}
+        .more-card:hover { background: rgba(107, 255, 206, 0.1); transform: scale(1.02); }
+        .more-card h3 { border: none; color: var(--color-mint); margin: 0; font-size: 18px; }
+
+        .team-member { display: flex; gap: 30px; margin-bottom: 40px; align-items: flex-start; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 30px; }
+        .team-photo { width: 180px; height: auto; border: 3px solid white; border-radius: 10px; }
+        .member-info h4 { color: var(--color-mint); font-size: 20px; margin-bottom: 10px; }
+        .member-info ul { list-style: none; font-size: 14px; color: rgba(246, 255, 255, 0.85); }
+        .member-info li::before { content: "○"; color: var(--color-mint); margin-right: 10px; }
+
+        .services-category-title { color: #000; background: var(--color-white-cyan); padding: 5px 10px; display: inline-block; margin-bottom: 15px; font-weight: bold; }
+        .services-list { list-style: none; margin-bottom: 30px; }
+        .services-list li { margin-bottom: 8px; padding-left: 20px; position: relative; font-size: 14px; line-height: 1.4; color: rgba(246, 255, 255, 0.9); }
+        .services-list li::before { content: "○"; color: var(--color-mint); position: absolute; left: 0; }
+        .sub-bullet { margin-left: 20px; display: block; }
+        .sub-bullet::before { content: "○"; color: var(--color-mint); margin-right: 10px; }
+
+        .links-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        .links-table th { text-align: left; padding: 12px; border-bottom: 2px solid var(--color-mint); color: var(--color-mint); text-transform: uppercase; }
+        .links-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); color: rgba(246, 255, 255, 0.9); }
+        .links-table a { color: var(--color-cyan-light); text-decoration: none; transition: 0.2s; }
+        .links-table a:hover { color: var(--color-mint); text-decoration: underline; }
+        .hersteller-cell { font-weight: bold; color: var(--color-blue-light); }
+
+        .legal-content { line-height: 1.6; font-size: 14px; color: rgba(246, 255, 255, 0.9); }
+        .legal-content h3 { margin-top: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; color: var(--color-blue-light); text-transform: uppercase; font-size: 18px; }
+        .legal-content p { margin-bottom: 15px; }
+        .legal-content ul { margin-bottom: 15px; padding-left: 20px; list-style: disc; }
+        .legal-content li { margin-bottom: 8px; }
+
+        @media (max-width: 900px) {
+            .team-member { flex-direction: column; align-items: center; text-align: center; }
+            .hero-banner h1 { font-size: 32px; }
+            .links-table, .links-table thead, .links-table tbody, .links-table th, .links-table td, .links-table tr { display: block; }
+            .links-table tr { margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; }
+            .links-table td { border: none; padding-left: 50%; position: relative; }
+            .links-table td::before { content: attr(data-label); position: absolute; left: 12px; font-weight: bold; color: var(--color-mint); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="app-container">
+        <nav class="sidebar glass-panel">
+            <div class="logo-frame">
+                <img src="https://www.icsnet.at/images/ics_logo.gif" alt="ICSnet Logo">
+            </div>
+            
+            <ul class="nav-links">
+                <li><a onclick="showSection('home')" id="nav-home" class="active"><span class="lang-text" data-de="HOME" data-en="HOME">HOME</span></a></li>
+                <li><a onclick="showSection('team')" id="nav-team"><span class="lang-text" data-de="ÜBER DAS TEAM" data-en="ABOUT THE TEAM">ÜBER DAS TEAM</span></a></li>
+                <li><a onclick="showSection('services')" id="nav-services"><span class="lang-text" data-de="LEISTUNGEN" data-en="SERVICES">LEISTUNGEN</span></a></li>
+                <li><a onclick="showSection('links')" id="nav-links"><span class="lang-text" data-de="LINKS" data-en="LINKS">LINKS</span></a></li>
+                <li><a onclick="showSection('projects')" id="nav-projects"><span class="lang-text" data-de="PROJEKTBILDER" data-en="PROJECT IMAGES">PROJEKTBILDER</span></a></li>
+                <li><a onclick="showSection('legal')" id="nav-legal"><span class="lang-text" data-de="IMPRESSUM & DATENSCHUTZ" data-en="IMPRINT & PRIVACY">IMPRESSUM & DATENSCHUTZ</span></a></li>
+            </ul>
+
+            <div class="partners-section">
+                <a href="#" class="partner-link"><img src="https://mpartner.at/images/magenta_business_partner.png" alt="Magenta"></a>
+                <a href="https://www.world4you.com/?affid=HF9FEBRZF9A" class="partner-link" target="_blank">
+                    <img src="https://www.icsnet.at/images/logos/w4y_mini_2.jpg" alt="World4You">
+                    <span class="partner-text lang-text" data-de="World4You Bestellen" data-en="Order World4You">World4You Bestellen</span>
+                </a>
+                <a href="https://partner.websms.com/#/ics/anmeldung-at" class="partner-link" target="_blank">
+                    <img src="https://www.icsnet.at/images/logos/websms-logo.png" alt="websms">
+                    <span class="partner-text lang-text" data-de="websms Anmeldung" data-en="websms Login">websms Anmeldung</span>
+                </a>
+                <a href="http://icsracing.at/" class="partner-link" target="_blank">
+                    <img src="https://www.icsnet.at/images/logos/logo2_7_small.jpg" alt="ICS Racing">
+                    <span class="partner-text">ICS Racing & Computing</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content glass-panel">
+            
+            <section id="home" class="content-section active">
+                <div class="hero-banner">
+                    <h1>ICSnet</h1>
+                    <p class="business-subtitle" style="margin-bottom: 0;">
+                        <span class="lang-text" data-de="Innovative Computersysteme & IT-Lösungen seit 1989." data-en="Innovative Computer Systems & IT Solutions since 1989.">Innovative Computersysteme & IT-Lösungen seit 1989.</span>
+                    </p>
+                </div>
+
+                <h2><span class="lang-text" data-de="Unsere Kernkompetenzen" data-en="Our Core Competencies">Unsere Kernkompetenzen</span></h2>
+                
+                <div class="home-feature-grid">
+                    <div class="glass-card feature-card" onclick="showSection('services')">
+                        <div class="icon-box">⚙️</div>
+                        <h3><span class="lang-text" data-de="DIENSTLEISTUNG" data-en="SERVICES">DIENSTLEISTUNG</span></h3>
+                        <p style="font-size: 14px; color: rgba(246, 255, 255, 0.75);">
+                            <span class="lang-text" data-de="Projekt-Engineering, Analyse und Systemservice aus einer Hand." data-en="Project engineering, analysis and system service from a single source.">Projekt-Engineering, Analyse und Systemservice aus einer Hand.</span>
+                        </p>
+                    </div>
+
+                    <div class="glass-card feature-card" onclick="showSection('services')">
+                        <div class="icon-box">💻</div>
+                        <h3><span class="lang-text" data-de="FACHHANDEL" data-en="RETAIL">FACHHANDEL</span></h3>
+                        <p style="font-size: 14px; color: rgba(246, 255, 255, 0.75);">
+                            <span class="lang-text" data-de="Hochwertige Hardware und Software führender Markenhersteller." data-en="High-quality hardware and software from leading brand manufacturers.">Hochwertige Hardware und Software führender Markenhersteller.</span>
+                        </p>
+                    </div>
+
+                    <div class="glass-card feature-card" onclick="showSection('team')">
+                        <div class="icon-box">👥</div>
+                        <h3><span class="lang-text" data-de="EXPERTISE" data-en="EXPERTISE">EXPERTISE</span></h3>
+                        <p style="font-size: 14px; color: rgba(246, 255, 255, 0.75);">
+                            <span class="lang-text" data-de="Langjährige Erfahrung und persönliche Betreuung durch unser Team." data-en="Many years of experience and personal support from our team.">Langjährige Erfahrung und persönliche Betreuung durch unser Team.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="glass-card more-card" onclick="showSection('services')">
+                    <h3><span class="lang-text" data-de="ALLE DETAILS & KNOW-HOW ANZEIGEN →" data-en="VIEW ALL DETAILS & KNOW-HOW →">ALLE DETAILS & KNOW-HOW ANZEIGEN →</span></h3>
+                </div>
+            </section>
+
+         <section id="team" class="content-section">
+    <h2><span class="lang-text" data-de="ICS - in eigener Sache" data-en="ICS - on our own behalf">ICS - in eigener Sache</span></h2>
+    <div class="glass-card">
+        
+        <div class="team-intro" style="line-height: 1.6; margin-bottom: 40px;">
+            <p>
+                <span class="lang-text" 
+                    data-de="Die Firma <b>ICS (Innovative Computer Systeme)</b> wurde im Jahre <b>1989</b> mit der Zielsetzung gegründet, <b>technisch anspruchsvolle Hard- und/oder Softwarelösungen</b> am PC-Sektor zu vermarkten." 
+                    data-en="The company <b>ICS (Innovative Computer Systems)</b> was founded in <b>1989</b> with the objective of marketing <b>technically sophisticated hardware and/or software solutions</b> in the PC sector.">
+                    Die Firma <b>ICS (Innovative Computer Systeme)</b> wurde im Jahre <b>1989</b> mit der Zielsetzung gegründet, <b>technisch anspruchsvolle Hard- und/oder Softwarelösungen</b> am PC-Sektor zu vermarkten.
+                </span>
+            </p>
+            <p>
+                <span class="lang-text" 
+                    data-de="Durch <b>Kooperation</b> mit führenden Herstellern der Branche, sowie konsequente <b>Schulung und Weiterbildung</b> konnte von Beginn an eine stetige, dem jeweiligen Stand der Technik entsprechende <b>Weiterentwicklung</b> des <b>Leistungsspektrums</b>, der <b>Produktpalette</b> und des dazugehörigen <b>Know-Hows</b>, erreicht werden." 
+                    data-en="Through <b>cooperation</b> with leading manufacturers in the industry, as well as consistent <b>training and further education</b>, a constant <b>further development</b> of the <b>range of services</b>, the <b>product range</b> and the associated <b>know-how</b>, corresponding to the respective state of the art, could be achieved from the very beginning.">
+                    Durch <b>Kooperation</b> mit führenden Herstellern der Branche, sowie konsequente <b>Schulung und Weiterbildung</b> konnte von Beginn an eine stetige, dem jeweiligen Stand der Technik entsprechende <b>Weiterentwicklung</b> des <b>Leistungsspektrums</b>, der <b>Produktpalette</b> und des dazugehörigen <b>Know-Hows</b>, erreicht werden.
+                </span>
+            </p>
+            <p>
+                <span class="lang-text" 
+                    data-de="<b>ICS</b> war und ist bemüht, in jedem Einzelfall, ein <b>Höchstmaß</b> an <b>technischer Kompetenz</b> und <b>Flexibilität</b>, sowie <b>Sorgfalt</b> und <b>persönlichem Engagement</b> für <b>Ihre spezifische Aufgabenstellung</b> aufzuwenden." 
+                    data-en="<b>ICS</b> was and is striving to devote, in every single case, a <b>maximum</b> of <b>technical competence</b> and <b>flexibility</b>, as well as <b>care</b> and <b>personal commitment</b> to <b>your specific task</b>.">
+                    <b>ICS</b> war und ist bemüht, in jedem Einzelfall, ein <b>Höchstmaß</b> an <b>technischer Kompetenz</b> und <b>Flexibilität</b>, sowie <b>Sorgfalt</b> und <b>persönlichem Engagement</b> für <b>Ihre spezifische Aufgabenstellung</b> aufzuwenden.
+                </span>
+            </p>
+            <p>
+                <span class="lang-text" 
+                    data-de="Die Entwicklung führte demzufolge vom <b>Einzelplatz-PC</b> über <b>Single-LANs</b> bis hin zur <b>unternehmensweiten Vernetzung bzw. Kommunikation</b>." 
+                    data-en="Consequently, development led from <b>stand-alone PCs</b> via <b>single-user LANs</b> to <b>company-wide networking and communication</b>.">
+                    Die Entwicklung führte demzufolge vom <b>Einzelplatz-PC</b> über <b>Single-LANs</b> bis hin zur <b>unternehmensweiten Vernetzung bzw. Kommunikation</b>.
+                </span>
+            </p>
+            <p>
+                <span class="lang-text" 
+                    data-de="Im Sinne dieser <b>Grundsätze</b> verstehen wir insgesamt unser <b>unternehmerisches Handeln</b> und würden uns freuen, <b>Sie</b> als Interessenten, Kunden bzw. Kooperationspartner gewinnen zu können!" 
+                    data-en="In the sense of these <b>principles</b>, we understand our <b>entrepreneurial actions</b> as a whole and would be pleased to win <b>you</b> as an interested party, customer or cooperation partner!">
+                    Im Sinne dieser <b>Grundsätze</b> verstehen wir insgesamt unser <b>unternehmerisches Handeln</b> und würden uns freuen, <b>Sie</b> als Interessenten, Kunden bzw. Kooperationspartner gewinnen zu können!
+                </span>
+            </p>
+        </div>
+
+        <div style="margin-bottom: 50px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
+            <h3 style="text-decoration: underline; margin-bottom: 20px;">
+                <span class="lang-text" data-de="Unsere Intentionen" data-en="Our Intentions">Unsere Intentionen</span>
+            </h3>
+            <ul class="services-list">
+                <li><span class="lang-text" data-de="<b>Aufgabenspezifisches</b> Engineering u. Anwenderberatung" data-en="<b>Task-specific</b> engineering and user consulting"><b>Aufgabenspezifisches</b> Engineering u. Anwenderberatung</span></li>
+                <li><span class="lang-text" data-de="<b>individuelle, persönliche Betreuung</b> von der Problemstellung bis zur Lösung" data-en="<b>Individual, personal support</b> from the problem definition to the solution"><b>individuelle, persönliche Betreuung</b> von der Problemstellung bis zur Lösung</span></li>
+                <li><span class="lang-text" data-de="<b>Komplettlösungen</b> aus einer Hand und mit klarer Verantwortung" data-en="<b>Complete solutions</b> from a single source and with clear responsibility"><b>Komplettlösungen</b> aus einer Hand und mit klarer Verantwortung</span></li>
+            </ul>
+
+            <h3 style="text-decoration: underline; margin-top: 40px; margin-bottom: 10px;">
+                <span class="lang-text" data-de="Wo wir Kompetenz beweisen wollen" data-en="Where we want to prove our competence">Wo wir Kompetenz beweisen wollen</span>
+            </h3>
+            <p style="margin-bottom: 15px; font-weight: bold;">
+                <span class="lang-text" data-de="Anspruchsvolle Konzepte / Lösungen in den Bereichen" data-en="Sophisticated concepts / solutions in the fields of">Anspruchsvolle Konzepte / Lösungen in den Bereichen</span>
+            </p>
+            <ul class="services-list">
+                <li><span class="lang-text" data-de="PC-Hard- u. Software / EDV-Infrastruktur (strukturierte Verkabelung)" data-en="PC hardware & software / IT infrastructure (structured cabling)">PC-Hard- u. Software / EDV-Infrastruktur (strukturierte Verkabelung)</span></li>
+                <li><span class="lang-text" data-de="lokale u. unternehmensweite Netzwerke / fehlertolerante Server-Systeme" data-en="Local and company-wide networks / fault-tolerant server systems">lokale u. unternehmensweite Netzwerke / fehlertolerante Server-Systeme</span></li>
+                <li><span class="lang-text" data-de="Kommunikation / Internet / Messaging" data-en="Communication / Internet / Messaging">Kommunikation / Internet / Messaging</span></li>
+            </ul>
+        </div>
+
+        <h3 style="text-decoration: underline; margin-bottom: 30px;">
+            <span class="lang-text" data-de="Unsere persönlichen Daten" data-en="Our personal data">Unsere persönlichen Daten</span>
+        </h3>
+        
+        <div class="team-member" style="display: flex; align-items: flex-start; gap: 30px; margin-bottom: 50px;">
+            <div style="text-align: center;">
+                <p style="color: var(--color-mint); font-weight: bold; margin-bottom: 10px;">○ Ing. Martin Außerwöger</p>
+                <img src="https://www.icsnet.at/images/mitarbeiter/Martin5.JPG" style="width: 180px; height: 230px; object-fit: cover; border: 3px solid white; border-radius: 5px;" alt="Martin">
+            </div>
+            <div class="member-info" style="flex: 1; margin-top: 35px;">
+                <ul class="services-list" style="font-size: 14px;">
+                    <li><span class="lang-text" data-de="Alleininhaber des Unternehmens (nicht protokolliertes Einzelunternehmen)" data-en="Sole proprietor of the company (unregistered sole proprietorship)">Alleininhaber des Unternehmens (nicht protokolliertes Einzelunternehmen)</span></li>
+                    <li><span class="lang-text" data-de="Absolvent der HTL f. Nachrichtentechnik in Linz / Leonding; Technischer Leiter" data-en="Graduate of the HTL for telecommunications in Linz / Leonding; Technical Director">Absolvent der HTL f. Nachrichtentechnik in Linz / Leonding; Technischer Leiter</span></li>
+                    <li><span class="lang-text" data-de="Im Unternehmen seit 1.4.1995" data-en="With the company since April 1st, 1995">Im Unternehmen seit 1.4.1995</span></li>
+                    <li><span class="lang-text" 
+                        data-de="<u>Spezialbereiche:</u> <b>Windows Server und Client Betriebssysteme</b> + BackOffice, Hard- / Softwarekonfiguration, Internet, Service, VB-Programmierung, Anwender-Support, Produkttests, Kommunikations- und Sicherheitssysteme für Internet- bzw. Standortverbindungen, Telefonanlagen" 
+                        data-en="<u>Specializations:</u> <b>Windows Server and Client operating systems</b> + BackOffice, hardware / software configuration, internet, service, VB programming, user support, product tests, communication and security systems for internet or location connections, telephone systems">
+                        <u>Spezialbereiche:</u> <b>Windows Server und Client Betriebssysteme</b> + BackOffice, Hard- / Softwarekonfiguration, Internet, Service, VB-Programmierung, Anwender-Support, Produkttests, Kommunikations- und Sicherheitssysteme für Internet- bzw. Standortverbindungen, Telefonanlagen
+                    </span></li>
+                    <li>E-Mail: <a href="mailto:m.ausserwoeger@icsnet.at" style="color:var(--color-mint)">m.ausserwoeger@icsnet.at</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="team-member" style="display: flex; align-items: flex-start; gap: 30px; margin-bottom: 50px;">
+            <div style="text-align: center;">
+                <p style="color: var(--color-mint); font-weight: bold; margin-bottom: 10px;">○ Andreas Ausserwöger</p>
+                <img src="https://www.icsnet.at/images/mitarbeiter/Andreas.jpg" style="width: 180px; height: 230px; object-fit: cover; border: 3px solid white; border-radius: 5px;" alt="Andreas">
+            </div>
+            <div class="member-info" style="flex: 1; margin-top: 35px;">
+                <ul class="services-list" style="font-size: 14px;">
+                    <li><span class="lang-text" data-de="Techniker" data-en="Technician">Techniker</span></li>
+                    <li><span class="lang-text" data-de="Abgeschlossene Lehre als EDV-Techniker" data-en="Completed apprenticeship as an IT technician">Abgeschlossene Lehre als EDV-Techniker</span></li>
+                    <li><span class="lang-text" data-de="Im Unternehmen seit 1.7.2007" data-en="With the company since July 1st, 2007">Im Unternehmen seit 1.7.2007</span></li>
+                    <li><span class="lang-text" 
+                        data-de="<u>Spezialbereiche:</u> <b>Windows Server und Client Betriebssysteme</b> + BackOffice, Hard- / Softwarekonfiguration, Implementierung, TroubleShooting, Pilotinstallationen, Produkttests" 
+                        data-en="<u>Specializations:</u> <b>Windows Server and Client operating systems</b> + BackOffice, hardware / software configuration, implementation, troubleshooting, pilot installations, product tests">
+                        <u>Spezialbereiche:</u> <b>Windows Server und Client Betriebssysteme</b> + BackOffice, Hard- / Softwarekonfiguration, Implementierung, TroubleShooting, Pilotinstallationen, Produkttests
+                    </span></li>
+                    <li>E-Mail: <a href="mailto:a.ausserwoeger@icsnet.at" style="color:var(--color-mint)">a.ausserwoeger@icsnet.at</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="team-member" style="display: flex; align-items: flex-start; gap: 30px;">
+            <div style="text-align: center;">
+                <p style="color: var(--color-mint); font-weight: bold; margin-bottom: 10px;">○ Ing. Josef Außerwöger</p>
+                <img src="https://www.icsnet.at/images/mitarbeiter/josef01.jpg" style="width: 180px; height: 230px; object-fit: cover; border: 3px solid white; border-radius: 5px;" alt="Josef">
+            </div>
+            <div class="member-info" style="flex: 1; margin-top: 35px;">
+                <ul class="services-list" style="font-size: 14px;">
+                    <li><span class="lang-text" data-de="Firmengründer (1989)" data-en="Company founder (1989)">Firmengründer (1989)</span></li>
+                    <li><span class="lang-text" data-de="Absolvent der HTL f. Maschinenbau in Linz" data-en="Graduate of the HTL for mechanical engineering in Linz">Absolvent der HTL f. Maschinenbau in Linz</span></li>
+                    <li><span class="lang-text" data-de="13 Jahre Industrieerfahrung als Entw. Ingenieur f. Zerstörungsfreie Prüfungen und Qual. Sicherung" data-en="13 years of industrial experience as a development engineer for non-destructive testing and quality assurance">13 Jahre Industrieerfahrung als Entw. Ingenieur f. Zerstörungsfreie Prüfungen und Qual. Sicherung</span></li>
+                    <li><span class="lang-text" 
+                        data-de="<u>Spezialbereiche:</u> <b>Server Produkte</b>, System-Engineering, fehlertolerante Hardware, Kommunikationskonzepte, Risikoanalysen, Router-Technologie; Softwarestrukturplanung" 
+                        data-en="<u>Specializations:</u> <b>Server products</b>, system engineering, fault-tolerant hardware, communication concepts, risk analysis, router technology; software structure planning">
+                        <u>Spezialbereiche:</u> <b>Server Produkte</b>, System-Engineering, fehlertolerante Hardware, Kommunikationskonzepte, Risikoanalysen, Router-Technologie; Softwarestrukturplanung
+                    </span></li>
+                    <li>E-Mail: <a href="mailto:j.ausserwoeger@icsnet.at" style="color:var(--color-mint)">j.ausserwoeger@icsnet.at</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+            <section id="services" class="content-section">
+                <h2>Was wir konkret für Sie tun können</h2>
+                <div class="glass-card">
+                    <h3 class="services-category-title">DIENSTLEISTUNG</h3>
+                    <ul class="services-list">
+                        <li>Projekt-Engineering
+                            <span class="sub-bullet">Problemanalyse / Systemplanung / Konzeption</span>
+                            <span class="sub-bullet">Pflichtenhefterstellung</span>
+                            <span class="sub-bullet">Projektrealisierung u. -abnahme</span>
+                            <span class="sub-bullet">Erprobung, Installation, Inbetriebnahme</span>
+                            <span class="sub-bullet">Kundenbetreuung, -beratung, -schulung</span>
+                        </li>
+                        <li>Systemservice / Störungsbehebung
+                            <span class="sub-bullet">Kundenberatung bei Reklamationen</span>
+                            <span class="sub-bullet">Risikoanalysen / Störfallsimulation u. -training</span>
+                        </li>
+                        <li>Planung, Installation, Abnahme von strukturierten Verkabelungssystemen</li>
+                        <li>Kommunikationslösungen
+                            <span class="sub-bullet">Wählmodem / ISDN</span>
+                            <span class="sub-bullet">Remote-PC / Remote-LAN, Server-to-Server Kommunikation (Router, Access-Server)</span>
+                            <span class="sub-bullet">Messaging Systeme</span>
+                            <span class="sub-bullet">Internet (aktiv / passiv)</span>
+                        </li>
+                        <li>SQL-Datenbankkonzeption u. Management</li>
+                        <li>Client-Server-Lösungen</li>
+                    </ul>
+
+                    <h3 class="services-category-title">FACHHANDEL</h3>
+                    <ul class="services-list">
+                        <li>Marken-PC's u. Serversysteme führender Hersteller
+                            <span class="sub-bullet">kundenspezifische Konfiguration von fehlertoleranten Serversystemen</span>
+                        </li>
+                        <li>Hardwarekomponenten u. Peripherie verschiedenster Hersteller</li>
+                        <li>Netzwerk- u. Verkabelungskomponenten</li>
+                        <li>Qualitätszubehör bzw. Systemerweiterungen</li>
+                        <li>Kommunikations-Hardware</li>
+                        <li>Netzwerkbetriebssysteme</li>
+                        <li>Kommunikations-Software</li>
+                        <li>Standard-Software</li>
+                        <li>Internet-Software</li>
+                        <li>Sicherheitssysteme
+                            <span class="sub-bullet">UPS (USV)</span>
+                            <span class="sub-bullet">Backup Hard- u. Software</span>
+                            <span class="sub-bullet">Firewall, Viruswall, VPN Hard- u. Software</span>
+                        </li>
+                    </ul>
+
+                    <h3 class="services-category-title">SPEZIFISCHES KNOW-HOW</h3>
+                    <ul class="services-list">
+                        <li>Windows Server und Client Betriebssysteme
+                            <span class="sub-bullet">Installation / Konfiguration</span>
+                            <span class="sub-bullet">Optimierung der Betriebsparameter</span>
+                            <span class="sub-bullet">Fehleranalyse / -behebung</span>
+                        </li>
+                        <li>MS BackOffice Produkte
+                            <span class="sub-bullet">Exchange Server + Frontend</span>
+                            <span class="sub-bullet">Internet Information Server + Tools</span>
+                            <span class="sub-bullet">SQL-Server</span>
+                        </li>
+                        <li>Kommunikations- und Sicherheitssysteme
+                            <span class="sub-bullet">Anwenderberatung / Systemanalyse</span>
+                            <span class="sub-bullet">Installation / Konfiguration</span>
+                            <span class="sub-bullet">Fehleranalyse / -behebung</span>
+                            <span class="sub-bullet">Internet- bzw. Standortverbindungen</span>
+                            <span class="sub-bullet">Backup / Schutz der Backup Systeme / automatische Restore-Tests</span>
+                            <span class="sub-bullet">Firewall / Viruswall / VPN</span>
+                        </li>
+                        <li>Telefonanlagen für KMU</li>
+                        <li>Analyse / Dokumentation bestehender Systeme
+                            <span class="sub-bullet">Herzstück-Komponenten / Ersatzteil-Listen</span>
+                            <span class="sub-bullet">Environment (Serverraum, Stromversorgung)</span>
+                            <span class="sub-bullet">Netzwerkplanung / -management</span>
+                        </li>
+                        <li>Ablage- u. Archivierungsorganisation
+                            <span class="sub-bullet">Installationskonzeption (z.B. logische Laufwerke, Verz. Strukturen)</span>
+                            <span class="sub-bullet">Betriebs- u. Notfallkonzepte (z.B. Backup-Zyklen)</span>
+                        </li>
+                        <li>Netzwerkverkabelung
+                            <span class="sub-bullet">Planung / Ausführung / Projektkoordination</span>
+                            <span class="sub-bullet">Abnahme / Messung / Fehleranalyse</span>
+                        </li>
+                        <li>vorbeugendes Krisenmanagement / Störfallsimulation an Netzwerksystemen
+                            <span class="sub-bullet">Risikoanalysen am Gesamt- bzw. an Teilsystemen</span>
+                            <span class="sub-bullet">Erstellung von Störfallszenarien</span>
+                            <span class="sub-bullet">Operator-Training für effiziente Störfallvorbeugung bzw. -behebung</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="links" class="content-section">
+                <h2>Homepage Links</h2>
+                <div class="glass-card">
+                    <table class="links-table">
+                        <thead>
+                            <tr><th>Hersteller</th><th>International</th><th>Deutschsprachig</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="hersteller-cell">HP / Compaq</td><td data-label="Int."><a href="https://www.hp.com" target="_blank">www.hp.com</a></td><td data-label="DE"><a href="https://www.hp.com/at" target="_blank">www.hp.com/at</a></td></tr>
+                            <tr><td class="hersteller-cell">Fujitsu</td><td data-label="Int."><a href="https://www.fujitsu.com/global" target="_blank">www.fujitsu.com/global</a></td><td data-label="DE"><a href="https://www.fujitsu.com/at" target="_blank">www.fujitsu.com/at</a></td></tr>
+                            <tr><td class="hersteller-cell">Microsoft</td><td data-label="Int."><a href="https://www.microsoft.com" target="_blank">www.microsoft.com</a></td><td data-label="DE"><a href="https://www.microsoft.at" target="_blank">www.microsoft.at</a></td></tr>
+                            <tr><td class="hersteller-cell">Veeam</td><td data-label="Int."><a href="https://www.veeam.com" target="_blank">www.veeam.com</a></td><td data-label="DE"><a href="https://www.veeam.com/de" target="_blank">www.veeam.com/de</a></td></tr>
+                            <tr><td class="hersteller-cell">Hobsoft</td><td data-label="Int."><a href="https://www.hobsoft.com" target="_blank">www.hobsoft.com</a></td><td data-label="DE"><a href="https://www.hob.de" target="_blank">www.hob.de</a></td></tr>
+                            <tr><td class="hersteller-cell">Orlando (Tech)</td><td data-label="Int."><a href="https://live360events.com" target="_blank">live360events.com</a></td><td data-label="DE"><a href="https://www.orlando.at" target="_blank">www.orlando.at</a></td></tr>
+                            <tr><td class="hersteller-cell">Trend Micro</td><td data-label="Int."><a href="https://www.trendmicro.com" target="_blank">www.trendmicro.com</a></td><td data-label="DE"><a href="https://www.trendmicro.de" target="_blank">www.trendmicro.de</a></td></tr>
+                            <tr><td class="hersteller-cell">LOGINventory</td><td data-label="Int."><a href="https://www.loginventory.com" target="_blank">www.loginventory.com</a></td><td data-label="DE"><a href="https://www.loginventory.de" target="_blank">www.loginventory.de</a></td></tr>
+                            <tr><td class="hersteller-cell">AGFEO</td><td data-label="Int."><a href="https://www.agfeo.de" target="_blank">www.agfeo.de</a></td><td data-label="DE"><a href="https://www.agfeo.at" target="_blank">www.agfeo.at</a></td></tr>
+                            <tr><td class="hersteller-cell">websms / Link</td><td data-label="Int."><a href="https://www.linkmobility.com" target="_blank">www.linkmobility.com</a></td><td data-label="DE"><a href="https://www.websms.at" target="_blank">www.websms.at</a></td></tr>
+                            <tr><td class="hersteller-cell">AVG</td><td data-label="Int."><a href="https://www.avg.com" target="_blank">www.avg.com</a></td><td data-label="DE"><a href="https://www.avg.de" target="_blank">www.avg.de</a></td></tr>
+                            <tr><td class="hersteller-cell">Panda Security</td><td data-label="Int."><a href="https://www.pandasecurity.com" target="_blank">www.pandasecurity.com</a></td><td data-label="DE"><a href="https://www.pandasecurity.com/de" target="_blank">www.pandasecurity.com/de</a></td></tr>
+                            <tr><td class="hersteller-cell">G DATA</td><td data-label="Int."><a href="https://www.gdatasoftware.com" target="_blank">www.gdatasoftware.com</a></td><td data-label="DE"><a href="https://www.gdata.de" target="_blank">www.gdata.de</a></td></tr>
+                            <tr><td class="hersteller-cell">ZyLAB</td><td data-label="Int."><a href="https://www.zylab.com" target="_blank">www.zylab.com</a></td><td data-label="DE"><a href="https://www.zylab.de" target="_blank">www.zylab.de</a></td></tr>
+                            <tr><td class="hersteller-cell">FullArmor</td><td data-label="Int."><a href="https://www.fullarmor.com" target="_blank">www.fullarmor.com</a></td><td data-label="DE">-</td></tr>
+                            <tr><td class="hersteller-cell">Quest (ehem. ScriptLogic)</td><td data-label="Int."><a href="https://www.quest.com" target="_blank">www.quest.com</a></td><td data-label="DE">-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section id="projects" class="content-section">
+                <h2><span class="lang-text" data-de="Projektbilder" data-en="Project Images">Projektbilder</span></h2>
+                <div class="glass-card">
+                    <div class="project-gallery">
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-006S_small1.JPG"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-007S_small1.JPG"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-009S_small.JPG"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-011S_small1.JPG"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Verteilerschrank_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Haus28_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Haus28_hinten_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Haus30_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Patchpanels_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/USV_Leiste_hinten_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/Verkabelung_hinten_small.jpg"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-004S_small1.JPG"></div>
+                        <div class="gallery-item"><img src="https://www.icsnet.at/images/projekte/MVC-013S_small.JPG"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="legal" class="content-section">
+                <h2><span class="lang-text" data-de="Impressum & Datenschutz" data-en="Imprint & Privacy">Impressum & Datenschutz</span></h2>
+                <div class="glass-card legal-content">
+                    <p><b>ICS - ING. MARTIN AUSSERWÖGER</b></p>
+                    <p>Stadlergutweg 46/2, A-4040 Linz</p>
+                    <p>Tel.: +43 (732) 700680-0<br>
+                    Web: <a href="http://www.icsnet.at" style="color:var(--color-mint)">www.icsnet.at</a><br>
+                    Mail: <a href="mailto:office@icsnet.at" style="color:var(--color-mint)">office@icsnet.at</a></p>
+                    <p>UID-Nr.: ATU72504257</p>
+
+                    <h3 style="margin-top: 50px;">Datenschutzerklärung</h3>
+                    <p>Wir freuen uns sehr, dass Sie sich für ein Angebot aus dem Hause ICS – Ing. Martin Außerwöger interessieren und bedanken uns für Ihr Interesse am Unternehmen, seinen Produkten und Dienstleistungen.</p>
+                    <p>Der Schutz Ihrer Privatsphäre und Ihrer persönlichen Daten ist uns ein wichtiges Anliegen. Um Ihnen ein möglichst hohes Maß an Transparenz und Sicherheit zu gewährleisten, informiert Sie unsere nachstehende Datenschutzerklärung über Art, Umfang und Zweck der Erhebung, Nutzung und Verarbeitung der durch uns erfassten Informationen und Daten.</p>
+
+                    <h3>Unsere Datenschutz-Grundsätze</h3>
+                    <p>Wir gehen mit den uns übertragenen Daten vertrauensvoll und verantwortungsbewusst um und beachten die gesetzlichen Bestimmungen zum Datenschutz und hierbei speziell der EU-Datenschutzgrundverordnung (DSGVO), des Datenschutzgesetzes (DSG) und des Telekommunikationsgesetzes (TKG).</p>
+                    <p>Personenbezogene Daten werden von uns nur in dem Umfang erhoben, in dem Sie sie uns mit Ihrer Kenntnis zur Verfügung stellen.</p>
+                    <p>Wir verkaufen, verleihen oder verschenken Ihre personenbezogenen Daten nicht. Eine Weitergabe an Dritte erfolgt ohne Ihre Einwilligung nur dann, wenn wir hierzu gesetzlich berechtigt oder verpflichtet sind.</p>
+                    <p>Wir verwenden Sicherheitstechnologien auf dem aktuellen Stand der Technik, um Ihre Daten vor Missbrauch zu schützen.</p>
+                    <p>Wir sind bemüht Ihnen eine sichere, reibungslose, effiziente und persönliche Nutzer-Erfahrung zur bieten.</p>
+
+                    <h3>Personenbezogene Daten</h3>
+                    <p>Personenbezogene Daten werden ausschließlich unter Beachtung der gesetzlichen Vorschriften der Datenschutzgrundverordnung (DSGVO), des Datenschutzgesetzes (DSG) sowie des Telekommunikationsgesetzes (TKG) erhoben und gespeichert.</p>
+                    <p>Wir speichern und verwenden Ihre personenbezogenen Daten auf Grund eines Auftrages, einer gesetzlichen Verpflichtung, für individuellen Produktsupport und, falls gewünscht, für unsere Newsletter und Produktinformationen.</p>
+                    <p>Wir geben Ihre personenbezogenen Daten nicht an Dritte weiter. Ausgenommen hiervon sind unsere Dienstleistungspartner, die zur Vertragserfüllung Ihre Daten benötigen. Darüber hinaus verwenden wir Ihre personenbezogenen Daten ausschließlich, um unsere Leistungen mit Ihnen abzurechnen und etwaige Ansprüche geltend zu machen und durchzusetzen. Eine Weitergabe Ihrer Daten an Dritte erfolgt nur, wenn und soweit wir dazu gesetzlich verpflichtet sind oder es zur Geltendmachung und Durchsetzung unserer Rechte und Forderungen erforderlich ist.</p>
+
+                    <h3>Erhebung, Verarbeitung und Nutzung von personenbezogenen Daten</h3>
+                    <p>Wir erheben, verarbeiten und nutzen personenbezogene Daten ohne weitergehende Einwilligung ausschließlich für die Vertragserfüllung sowie auf Grundlage von gesetzlichen Verpflichtungen. Ihre personenbezogenen Daten werden außerhalb der Vertragserfüllung ohne Ihre Einwilligung nicht an Dritte weitergegeben. Wir erheben und verarbeiten personenbezogene Daten zu folgenden Zwecken:</p>
+                    <ul>
+                        <li>Erfüllung von Verträgen über Lieferungen und Leistungen</li>
+                        <li>Speicherung von Daten und Anfertigen von Sicherungskopien gemäß Vertrag</li>
+                        <li>Anlage und Verwaltung von Benutzerkennungen und Zugriffsrechten gemäß Vertrag</li>
+                        <li>Personal-, Kunden-, Interessenten- und Lieferantenverwaltung</li>
+                    </ul>
+
+                    <h3>Arten personenbezogener Daten</h3>
+                    <p>Die Art der verarbeiteten personenbezogenen Daten ergibt sich aus dem bestehenden Vertragsverhältnis und aus dem erteilten Einzelauftrag. Ergänzend hierzu gilt folgende Beschreibung der Art der verarbeitenden personenbezogenen Daten:</p>
+                    <ul>
+                        <li>Zugangsdaten, Benutzerkennzeichen und Kennwörter</li>
+                        <li>Kunden- und Interessentendaten</li>
+                        <li>Mitarbeiterdaten</li>
+                        <li>Kommunikationsdaten (E-Mail, Fax, Brief, etc.)</li>
+                        <li>Aufzeichnung von Daten über die Leistungserbringung</li>
+                        <li>Anwenderdaten</li>
+                    </ul>
+
+                    <h3>Kategorien betroffener Personen</h3>
+                    <ul>
+                        <li>Kunden</li>
+                        <li>Lieferanten</li>
+                        <li>Dienstleister</li>
+                        <li>Partner, Dritte</li>
+                        <li>Sonstige Geschäftspartner</li>
+                        <li>Bewerber</li>
+                        <li>Mitarbeiter</li>
+                        <li>Systembenutzer</li>
+                    </ul>
+
+                    <h3>Informationen bezüglich Transparenz und Ihrer Rechte</h3>
+                    
+                    <h3>Rechtsgrundlagen der Verarbeitung Ihrer personenbezogenen Daten</h3>
+                    <p>Die Rechtmäßigkeit der Verarbeitung Ihrer personenbezogenen Daten durch unser Unternehmen basiert im Wesentlichen auf den Erfordernissen zur Erfüllung eines Vertrages, wie dies beispielsweise bei Verarbeitungsvorgängen der Fall ist, die für eine Lieferung von Waren oder die Erbringung einer sonstigen Leistung oder Gegenleistung notwendig sind. Gleiches gilt für Verarbeitungsvorgänge, die zur Durchführung vorvertraglicher Maßnahmen erforderlich sind, etwa Anfragen zu unseren Produkten oder Leistungen. Unser Unternehmen unterliegt rechtlichen Verpflichtung durch welche eine Verarbeitung von personenbezogenen Daten erforderlich wird, wie beispielsweise die Erfüllung steuerlicher Pflichten. Daneben berufen wir uns auf Ihre ausdrückliche Einwilligung zur Verarbeitung der Sie betreffenden personenbezogenen Daten. Sofern eine Interessenabwägung ergibt, dass Ihre Rechte zum Schutz der personenbezogenen Daten nicht überwiegen, kann eine Verarbeitung auch in unserem berechtigten Interesse erfolgen. Dies ist beispielsweise der Fall bei einer Anfrage über ein Kontaktformular, da die Datenverarbeitung erforderlich ist, um Ihre Anfrage zu bearbeiten.</p>
+
+                    <h3>Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung</h3>
+                    <p>Sie können Auskunft über Ihre bei uns gespeicherten Daten oder Berichtigung, Sperrung und Löschung Ihrer gespeicherten Daten und deren Verarbeitung verlangen. Sofern einer Löschung gesetzliche, vertragliche oder handels- bzw. steuerrechtliche Aufbewahrungsfristen oder sonstige gesetzlich verankerte Gründe entgegenstehen, werden Ihre Daten nicht gelöscht, sondern mit einem Sperrvermerk versehen.</p>
+
+                    <h3>Recht auf Widerruf</h3>
+                    <p>Sie haben das Recht, jederzeit gegen die Verarbeitung Sie betreffende personenbezogener Daten Widerspruch einzulegen. Wir verarbeiten die personenbezogenen Daten im Falle des Widerspruchs nicht mehr, es sei denn, wir können zwingende Gründe für die Verarbeitung nachweisen, die entgegen Ihren Interessen, Rechten und Freiheiten überwiegen, oder die Verarbeitung dient der Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen. Dieses Recht schließt Ihr Recht auf Widerruf einer datenschutzrechtlichen Einwilligung ein, die Sie uns für die Verarbeitung erteilt haben.</p>
+
+                    <h3>Recht auf Datenübertragbarkeit</h3>
+                    <p>Sie haben das Recht, die Sie betreffenden personenbezogenen Daten, welche Sie uns bereitgestellt haben und deren Verarbeitung auf einer Einwilligung oder einem Vertrag beruht und mithilfe automatisierter Verfahren erfolgt, in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten und übermittelt zu bekommen. Soweit dies technisch machbar ist und sofern hiervon nicht die Rechte und Freiheiten anderer Personen beeinträchtigt werden, können Sie erwirken, dass die personenbezogenen Daten direkt von uns an einen anderen Verantwortlichen übermittelt werden.</p>
+
+                    <h3>Routinemäßige Löschung und Sperrung von personenbezogenen Daten</h3>
+                    <p>Wir verarbeiten und speichern personenbezogene Daten von Ihnen nur für den Zeitraum, der zur Erreichung des Speicherungszwecks erforderlich ist oder sofern dies durch den Europäischen Richtlinien- und Verordnungsgeber oder einen anderen Gesetzgeber in Gesetzen oder Vorschriften, welchen wir unterliegen, vorgesehen wurde.</p>
+                    <p>Entfällt der Speicherungszweck oder läuft eine vom Europäischen Richtlinien- und Verordnungsgeber oder einem anderen zuständigen Gesetzgeber vorgeschriebene Speicherfrist ab, werden die personenbezogenen Daten routinemäßig und entsprechend den gesetzlichen Vorschriften gesperrt oder gelöscht.</p>
+
+                    <h3>Automatisierte Entscheidungsfindung (Profiling)</h3>
+                    <p>Profiling ist jede Art der automatisierten Verarbeitung personenbezogener Daten, die darin besteht, dass diese personenbezogenen Daten verwendet werden, um bestimmte persönliche Aspekte, die sich auf eine natürliche Person beziehen, zu bewerten, insbesondere, um Aspekte bezüglich Arbeitsleistung, wirtschaftlicher Lage, Gesundheit, persönlicher Vorlieben, Interessen, Zuverlässigkeit, Verhalten, Aufenthaltsort oder Ortswechsel dieser natürlichen Person zu analysieren oder vorherzusagen.</p>
+                    <p>Wir nutzen Ihre Daten nicht für eine automatische Entscheidungsfindung oder für Profiling im Sinne des Art 22 DSGVO.</p>
+
+                    <h3>Geltendmachung Ihrer Rechte</h3>
+                    <p>Für die Wahrnehmung der Betroffenenrechte kontaktieren Sie uns bitte unter:<br>
+                    ICS – Ing. Martin Außerwöger<br>
+                    Stadlergutweg 46/2<br>
+                    4040 Linz<br>
+                    Tel.: +43 (732) 700680-0<br>
+                    E-Mail: <b>Datenschutz@ICSnet.at</b></p>
+
+                    <h3>Recht auf Beschwerde bei einer Aufsichtsbehörde</h3>
+                    <p>Wenn Sie der Ansicht sind, dass die Verarbeitung der Sie betreffenden personenbezogenen Daten gegen geltendes Datenschutzrecht verstößt, können Sie das Recht auf Beschwerde bei einer Aufsichtsbehörde wahrnehmen.</p>
+                    <p>Aufsichtsbehörde für die Einhaltung datenschutzrechtlicher Bestimmungen in Österreich:<br>
+                    Österreichische Datenschutzbehörde<br>
+                    Wickenburggasse 8-10<br>
+                    1080 Wien<br>
+                    Tel.: +43 (1) 53115-202525<br>
+                    Fax: +43 (1) 53115-202690<br>
+                    E-Mail: dsb@dsb.gv.at<br>
+                    Web: http://www.dsb.gv.at/</p>
+
+                    <h3>Einbindung von Diensten und Inhalten Dritter</h3>
+                    <p>Es kann vorkommen, dass innerhalb unseres Onlineangebotes Inhalte Dritter, wie zum Beispiel Videos von YouTube, Kartenmaterial von Google-Maps, RSS-Feeds oder Grafiken von anderen Webseiten, eingebunden werden. Dies setzt immer voraus, dass die Anbieter dieser Inhalte (nachfolgend bezeichnet als „Dritt-Anbieter") die IP-Adresse der Nutzer wahrnehmen. Denn ohne die IP-Adresse, könnten sie die Inhalte nicht an den Browser des jeweiligen Nutzers senden. Die IP-Adresse ist damit für die Darstellung dieser Inhalte erforderlich. Wir bemühen uns, nur solche Inhalte zu verwenden, deren jeweilige Anbieter die IP-Adresse lediglich zur Auslieferung der Inhalte verwenden, jedoch haben wir keinen Einfluss darauf, falls die Dritt-Anbieter die IP-Adresse z.B. für statistische Zwecke speichern.</p>
+
+                    <h3>Sicherheit und Vertraulichkeit</h3>
+                    <p>Bei Supportanfragen ermöglichen wir Ihnen, die zum Zwecke der Bearbeitung Ihrer Supportanfrage erforderlichen Daten in einem dem aktuellen Stand der Technik entsprechenden Verschlüsselungsverfahren gesichert an uns zu übermitteln. Auf Wunsch übersenden wir Ihnen in besonderen Fällen (z.B., wenn Sie uns zur Bearbeitung Ihrer Supportanfrage besonders vertrauliche Daten übermitteln) zu Ihrem Schutz auch gerne eine schriftliche Verpflichtungserklärung zur Wahrung der Vertraulichkeit und zur Beachtung des Datenschutzes zu. Wenden Sie sich hierzu bei Bedarf bitte an unseren Support oder unseren Beauftragten für Datenschutz.</p>
+
+                    <h3>Sicherstellung der Betriebssicherheit</h3>
+                    <p>Serverbetriebssystem, Webserver und Anwendungsprogramme erheben und speichern automatisch Informationen in sogenannten Log-Dateien und ermöglichen uns damit, Fehlverhalten von Systemen und Anwendungen sowie sicherheitsrelevante Vorfälle frühzeitig zu erkennen und entsprechende Maßnahmen einleiten zu können. Diese Protokolle enthalten u.U. auch personenbezogene Daten, wie z.B. Anmeldeinformationen, welche oft zur Eingrenzung von Fehlerzuständen nötig sind. Protokolldaten werden ausschließlich zum Zwecke der Datenschutzkontrolle, der Datensicherung oder zur Sicherung eines ordnungsgemäßen Betriebs einer Datenverarbeitungsanlage aufgezeichnet. Keinesfalls werden Protokolldaten zur Verhaltens- oder Leistungskontrolle ausgewertet.</p>
+                    <p>Die Protokolldaten werden im Sinne der Datenminimierung je nach Erfordernis, spätestens aber nach sechs Monaten gelöscht, sofern keine gesetzlichen Anforderungen dem entgegenstehen.</p>
+
+                    <h3>Remote-Unterstützung / Fernwartung / Daten- und Protokollanalyse</h3>
+                    <p>Für die Unterstützung der Mitarbeiter-/innen des Auftraggebers kann es sein, dass sich ein/e autorisierte/r Mitarbeiter-/in des Auftragsnehmers mittels eines Fernwartungstools auf eines oder mehrere Ihrer Systeme verbindet. Für eine ordnungsgemäße Abwicklung sind folgende Regeln festgelegt:</p>
+                    <ul>
+                        <li>Vor Beginn der Sitzung wird der Kunde darauf hingewiesen, dass der Bildschirm ab dem Zeitpunkt der Freischaltung übertragen wird und sämtliche nicht mit der Unterstützung in Zusammenhang stehenden Dokumente zu speichern und Anwendungen zu schließen sind.</li>
+                        <li>Der Fernwartungszugang ist nur nach Freischaltung durch den Mitarbeiter / die Mitarbeiterin des Auftraggebers möglich und der Kunde kann die durchgeführten Tätigkeiten mitverfolgen.</li>
+                        <li>Besondere Tätigkeiten sowie Beiziehung von dritten Parteien, wie z.B. eines Supportmitarbeiters des Herstellers, werden durch das Vier-Augen-Prinzip abgesichert.</li>
+                        <li>Eine Übertragung von Daten des Auftraggebers findet nur nach vorhergehender Zustimmung des Auftraggebers statt. Wenn gewünscht, kann vorab eine schriftliche Verpflichtungserklärung zur Wahrung der Vertraulichkeit und zur Beachtung des Datenschutzes übermittelt werden. Solche zur Fehleranalyse bzw. Fehlerbehebung zur Verfügung gestellten Daten, werden sofort nach der Verarbeitung wieder vernichtet.</li>
+                        <li>Die Protokollierung des Zugriffs (Datum, Uhrzeit, Dauer) erfolgt in der Fernwartungssoftware.</li>
+                        <li>Im CRM-System des Auftragnehmers werden die durchgeführten Arbeiten erfasst und mit Informationen über Datum und Uhrzeit, Dauer und Name des durchführenden Mitarbeiters bzw. der Mitarbeiterin protokolliert.</li>
+                        <li>Eine Aufzeichnung von Sitzungen wird nicht durchgeführt.</li>
+                    </ul>
+
+                    <h3>Datenerhebung und –speicherung Website</h3>
+                    <p>Beim Aufruf unseres Internetauftritts wird eine Verbindung mit unserem Server hergestellt. Erfasst und gespeichert werden dabei die Zugriffspfade der Seiten, der Zeitpunkt der Verbindungsherstellung sowie Ihre derzeitige IP-Adresse zur Abwehr von Angriffen sowie zur Erkennung von Störungen und Problemen. Während Ihres Besuchs auf unseren Internetseiten können Daten („Cookies”) auf Ihrem Computer gespeichert werden, die Ihnen die Nutzung unseres Angebots erleichtern. Wir verwenden diese Daten weder um Sie zu identifizieren noch um mit Ihnen in Kontakt zu treten.</p>
+                    <p>Unsere Website benutzt derzeit keine Cookies.</p>
+
+                    <h3>Verwendung von Cookies</h3>
+                    <p>Cookies sind kleine Dateien, die es ermöglichen, auf dem Zugriffsgerät der Nutzer (PC, Smartphone o.ä.) spezifische, auf das Gerät bezogene Informationen zu speichern. Sie dienen zum einem der Benutzerfreundlichkeit von Webseiten und damit den Nutzern (z.B. Speicherung des Warenkorbes während des Bestellvorganges). Zum anderen dienen sie dazu, die statistischen Daten der Webseitennutzung zu erfassen und sie zwecks Verbesserung des Angebotes analysieren zu können. Als Nutzer können Sie auf den Einsatz der Cookies Einfluss nehmen. Die meisten Browser verfügen über eine Option, mit der das Speichern von Cookies eingeschränkt oder komplett verhindert wird. Allerdings wird darauf hingewiesen, dass die Nutzung und insbesondere der Nutzungskomfort ohne Cookies eingeschränkt werden.</p>
+                    <p>Sie können viele Online-Anzeigen-Cookies von Unternehmen über die US-amerikanische Seite http://www.aboutads.info/choices/ oder die EU-Seite http://www.youronlinechoices.com/uk/your-ad-choices/ verwalten. Eine deutschsprachige Alternative finden Sie hier: http://www.meine-cookies.org/cookies_verwalten/praeferenzmanager-beta.html</p>
+
+                    <h3>Verwendung von Webanalyse-Tools</h3>
+                    <p>Wir möchten unsere Dienste ständig verbessern, auf dem aktuellsten Stand der Technik halten und Ihnen ein sicheres, reibungslose, effiziente und persönliches Nutzer-Erlebnis bieten. Wir werten zu diesem Zweck nach Maßgabe der folgenden Punkte allgemeine Informationen wie z.B. die Anzahl und Dauer der Aufrufe unserer Internetseiten und die hierzu verwendeten Internet-Browser aus.</p>
+                    <p>Unsere Website benutzt derzeit keine Webanalyse-Tools.</p>
+
+                    <h3>Änderung der Datenschutzerklärung</h3>
+                    <p>Bitte beachten Sie, dass diese Datenschutzhinweise jederzeit unter Beachtung der geltenden Datenschutzvorschriften geändert werden können. Es gilt immer die zum Zeitpunkt Ihres Besuchs abrufbare Fassung.</p>
+                    <p>Falls Sie noch Fragen haben, können Sie uns gerne unter folgender Adresse kontaktieren:<br>
+                    ICS – Ing. Martin Außerwöger<br>
+                    Stadlergutweg 46/2<br>
+                    4040 Linz<br>
+                    Tel.: +43 (732) 700680-0<br>
+                    E-Mail: <b>Datenschutz@ICSnet.at</b></p>
+                    
+                    <p><i>Stand: Mai 2018</i></p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        let currentLang = 'de';
+        function toggleLanguage() {
+            currentLang = currentLang === 'de' ? 'en' : 'de';
+            document.querySelector('.lang-toggle-btn').innerText = currentLang === 'en' ? 'EN / DE' : 'DE / EN';
+            document.querySelectorAll('.lang-text').forEach(el => {
+                el.innerText = el.getAttribute('data-' + currentLang);
+            });
+        }
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
+            document.getElementById('nav-' + sectionId).classList.add('active');
+            document.querySelector('.main-content').scrollTop = 0;
+        }
+    </script>
+</body>
+</html>
