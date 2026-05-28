@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ICSnet - IT Solutions</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         :root {
-            --color-blue-dark: #00003A;
-            --color-white-cyan: #F6FFFF;
-            --color-blue-primary: #018DD6;
-            --color-mint: #6BFFCE;
-            --color-teal: #3ACCAE;
-            --color-blue-royal: #2556EA;
-            --color-cyan-light: #83E1EB;
-            --color-blue-light: #70A4EA;
-            --color-magenta: #E20074;
+            --color-blue-dark: #0F172A;
+            --color-white-cyan: #F8FAFC;
+            --color-blue-primary: #0EA5E9;
+            --color-mint: #38BDF8;
+            --color-teal: #2DD4BF;
+            --color-blue-royal: #3B82F6;
+            --color-cyan-light: #7DD3FC;
+            --color-blue-light: #60A5FA;
+            --color-magenta: #EC4899;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background-color: var(--color-blue-dark);
@@ -68,9 +69,9 @@
         .app-container { display: flex; width: 100%; min-height: 100vh; z-index: 1; flex-direction: row; }
 
         .glass-panel {
-            background: rgba(246, 255, 255, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
         }
 
         .sidebar {
@@ -155,7 +156,7 @@
         h2 { color: var(--color-cyan-light); font-size: 28px; margin-bottom: 20px; text-transform: uppercase; border-left: 4px solid var(--color-mint); padding-left: 15px; }
         h3 { color: var(--color-blue-light); margin: 25px 0 15px 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; text-decoration: underline; }
 
-        .glass-card { background: rgba(246, 255, 255, 0.03); border: 1px solid rgba(246, 255, 255, 0.1); padding: 30px; border-radius: 15px; margin-bottom: 30px; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
 
         .project-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .gallery-item { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 10px; transition: 0.3s; overflow: hidden; display: flex; justify-content: center; align-items: center; }
@@ -165,8 +166,8 @@
         .hero-banner h1 { font-size: 42px; color: var(--color-white-cyan); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
 
         .home-feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .feature-card { padding: 30px; text-align: center; transition: 0.3s; cursor: pointer; }
-        .feature-card:hover { transform: translateY(-10px); background: rgba(246, 255, 255, 0.08); border-color: var(--color-mint); }
+        .feature-card { padding: 30px; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .feature-card:hover { transform: translateY(-15px); background: rgba(255, 255, 255, 0.1); border-color: var(--color-mint); box-shadow: 0 15px 30px rgba(56, 189, 248, 0.2); }
         
         .icon-box { 
             display: flex; 
@@ -266,19 +267,19 @@
 
             <div class="partners-section">
                 <div style="display: flex; justify-content: center; align-items: center; cursor: default; user-select: none;">
-                    <img src="https://scontent.flnz1-1.fna.fbcdn.net/v/t39.30808-6/304278366_446607500822845_9023606888421909431_n.png?_nc_cat=101&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=p8fXb2jseLAQ7kNvwG_1XJF&_nc_oc=Adm_fMkOodSDdMpzE96pf8tgDzOD6e_1avlhh8iQr-JqOtwtNqJcNDVVlRmx3Xlh8RU&_nc_zt=23&_nc_ht=scontent.flnz1-1.fna&_nc_gid=s4iA5wrWxLwbSD6W0g_xjg&oh=00_AfvyF6sD6PxnOdTXYTZe_-BZGyPNEqCcrTo2upV4hZPx1g&oe=69A0C915" alt="Magenta Business Partner" style="max-width: 140px; width: 100%; height: auto; background-color: #ffffff; padding: 8px; border-radius: 8px; display: block; box-sizing: border-box;">
+                    <span style="color: white; font-weight: bold; background: #e20074; padding: 10px; border-radius: 5px; text-align: center; display: block;">Magenta Business Partner</span>
                 </div>
 
                 <a href="https://www.world4you.com/?affid=HF9FEBRZF9A" class="partner-link" target="_blank">
-                    <img src="https://www.icsnet.at/images/logos/w4y_mini_2.jpg" alt="World4You">
+                    <img src="images/logos/w4y_mini_2.jpg" alt="World4You" onerror="this.outerHTML='<span class=\'partner-text lang-text\'>World4You</span>'">
                     <span class="partner-text lang-text" data-de="World4You Bestellen" data-en="Order World4You">World4You Bestellen</span>
                 </a>
                 <a href="https://partner.websms.com/#/ics/anmeldung-at" class="partner-link" target="_blank">
-                    <img src="https://www.icsnet.at/images/logos/websms-logo.png" alt="websms">
+                    <img src="images/logos/websms-logo.png" alt="websms" onerror="this.outerHTML='<span class=\'partner-text lang-text\'>websms</span>'">
                     <span class="partner-text lang-text" data-de="websms Anmeldung" data-en="websms Login">websms Anmeldung</span>
                 </a>
                 <a href="http://icsracing.at/" class="partner-link" target="_blank">
-                    <img src="https://www.icsnet.at/images/logos/logo2_7_small.jpg" alt="ICS Racing">
+                    <img src="images/logos/logo2_7_small.jpg" alt="ICS Racing" onerror="this.outerHTML='<span class=\'partner-text lang-text\'>ICS Racing</span>'">
                     <span class="partner-text">ICS Racing & Computing</span>
                 </a>
             </div>
